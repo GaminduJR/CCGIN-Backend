@@ -10,6 +10,7 @@ const postRoutes = require('./routes/posts');
 const studentRoutes = require('./routes/student');
 const lecturerRoutes = require('./routes/lecturer');
 const bookRoutes = require('./routes/book');
+const workerRoutes = require('./routes/worker');
 
 
 //app middleware
@@ -21,6 +22,7 @@ app.use(postRoutes);
 app.use(studentRoutes);
 app.use(lecturerRoutes);
 app.use(bookRoutes);
+app.use(workerRoutes);
 
 
 const PORT = 8000;
