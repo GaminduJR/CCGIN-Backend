@@ -9,6 +9,8 @@ const app = express();
 const postRoutes = require('./routes/posts');
 const studentRoutes = require('./routes/student');
 const lecturerRoutes = require('./routes/lecturer');
+const bookRoutes = require('./routes/book');
+
 
 //app middleware
 app.use(bodyPaser.json());
@@ -18,6 +20,8 @@ app.use(cors());
 app.use(postRoutes);
 app.use(studentRoutes);
 app.use(lecturerRoutes);
+app.use(bookRoutes);
+
 
 const PORT = 8000;
 const DB_URL = 'mongodb+srv://gamindu:gamindu123@cluster0.vybknhr.mongodb.net/mernCRUD?retryWrites=true&w=majority';
