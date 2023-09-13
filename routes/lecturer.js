@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post('/lecturer/save', async (req, res) => {
     try {
-        const newLecturer = new Lecturer(req.body);
+        const newLecturer = new Lecturers(req.body);
         await newLecturer.save();
         return res.status(200).json({
             success: "Lecturer saved successfully"

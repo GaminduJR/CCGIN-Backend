@@ -21,4 +21,4 @@ const librarianSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('Librarians', librarianSchema);
+module.exports = mongoose.model('Librarian', librarianSchema);
