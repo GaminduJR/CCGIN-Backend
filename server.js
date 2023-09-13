@@ -6,7 +6,6 @@ const cors = require('cors');
 const app = express(); 
 
 //import routes
-const postRoutes = require('./routes/posts');
 const studentRoutes = require('./routes/student');
 const lecturerRoutes = require('./routes/lecturer');
 const bookRoutes = require('./routes/book');
@@ -17,7 +16,6 @@ app.use(bodyPaser.json());
 app.use(cors());
 
 //route middleware
-app.use(postRoutes);
 app.use(studentRoutes);
 app.use(lecturerRoutes);
 app.use(bookRoutes);
