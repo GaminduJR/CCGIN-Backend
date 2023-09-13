@@ -3,7 +3,7 @@ const Workers = require('../models/worker');
 
 const router = express.Router();
 
-//Save books
+//Save worker
 
 router.post('/worker/save', async (req, res) => {
     try {
