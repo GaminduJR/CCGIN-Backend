@@ -5,7 +5,7 @@ const router = express.Router();
 
 //Save books
 
-router.post('/save', async (req, res) => {
+router.post('/book/save', async (req, res) => {
     try {
         const newBook = new Books(req.body);
         await newBook.save();
