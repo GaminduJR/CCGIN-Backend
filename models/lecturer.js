@@ -16,7 +16,7 @@ const lecturerSchema = new mongoose.Schema({
         unique:true,
         required:true
     },
-    phoneNum:{
+    contactNum:{
         type:String,
         required:true
     }

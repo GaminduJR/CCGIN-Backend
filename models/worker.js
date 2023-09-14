@@ -11,11 +11,11 @@ const workSchema = new mongoose.Schema({
         unique:true,
         required:true
     },
-    cleaningtType:{
+    cleaningType:{
         type:String,
         required:true
     },
-    phoneNum:{
+    contactNum:{
         type:String,
         required:true
     }
