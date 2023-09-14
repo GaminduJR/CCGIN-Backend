@@ -11,7 +11,7 @@ const lecturerRoutes = require('./routes/lecturer');
 const bookRoutes = require('./routes/book');
 const workerRoutes = require('./routes/worker');
 const librarianRoutes = require('./routes/librarian');
-// const userRoutes = require('./routes/user');
+const userRoutes = require('./routes/user');
 
 //app middleware
 app.use(bodyPaser.json());
@@ -23,7 +23,7 @@ app.use(lecturerRoutes);
 app.use(bookRoutes);
 app.use(workerRoutes);
 app.use(librarianRoutes);
-// app.use(userRoutes);
+app.use(userRoutes);
 
 
 const PORT = 8000;
