@@ -8,10 +8,12 @@ const lecturerSchema = new mongoose.Schema({
     },
     NIC:{
         type:String,
+        unique:true,
         required:true
     },
     email:{
         type:String,
+        unique:true,
         required:true
     },
     contactNum:{

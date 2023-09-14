@@ -8,10 +8,7 @@ const workSchema = new mongoose.Schema({
     },
     NIC:{
         type:String,
-        required:true
-    },
-    Town:{
-        type:String,
+        unique:true,
         required:true
     },
     cleaningtType:{
