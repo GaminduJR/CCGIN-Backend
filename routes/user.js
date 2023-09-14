@@ -1,156 +1,118 @@
-//login user
-router.post(
-  "/user/login",
-  userController.loginUser
-);
+const express = require('express');
+const Users = require('../models/user');
 
-//register user
-router.post(
-  "/user/register",
-  upload.single("file"),
-  userController.registerUser
-);
+const router = express.Router();
+const bcrypt = require('bcryptjs')
 
-router.post(
-  "/user/logout",
-  userController.logoutUser
-);
+// register user
+router.post('/user/register', async (req, res) => {
+  const { userName, userEmail, userPassword } = req.body
 
-//get users
-router.get("/user", userController.getUser);
+  if (!userName || !userEmail || !userPassword) {
+    res.status(400)
+    throw new Error('Please add all fields')
+  }
 
-// //update user
-// router.put(
-//   "/user/update/:id",
-//   upload.single("file"),
-//   userController.editUser
-// );
+  // Check if user exists
+  const userExists = await Users.findOne({ userEmail })
 
-// //delete user
-// router.delete("/user/delete/:id", userController.deleteUser);
+  if (userExists) {
+    res.status(400)
+    throw new Error('User already exists')
+  }
 
-// //get a specific user
-// router.get("/user/:id", userController.getSpecificUser);
+  // Hash password
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(userPassword, salt)
 
-router.get('/user/check-session', userController.authenticate);
+  // Create user
+  const user = await Users.create({
+    userName,
+    userEmail,
+    userPassword: hashedPassword,
+  })
 
+  if (user) {
+    res.status(201).json({
+      _id: user.id,
+      userName: user.userName,
+      userEmail: user.userEmail,
+      // token: generateToken(user._id),
+    })
+  } else {
+    res.status(400)
+    throw new Error('Invalid user data')
+  }
+});
 
+// login user
+router.post('/user/login', async (req, res) => {
+const { userEmail, userPassword } = req.body
 
+// Check for user userEmail
+const user = await Users.findOne({ userEmail })
 
+if (user && (await bcrypt.compare(userPassword, user.userPassword))) {
+  req.session.userId = user._id;
 
-// const jwt = require('jsonwebtoken')
-// const bcrypt = require('bcryptjs')
-// const asyncHandler = require('express-async-handler')
-// const User = require('../models/userModel')
+  res.json({
+    _id: user.id,
+    userName: user.userName,
+    userEmail: user.userEmail,
+  })
 
-// // @desc    Register new user
-// // @route   POST /api/users
-// // @access  Public
-// const registerUser = asyncHandler(async (req, res) => {
-//   const { userName, image, userEmail, userPassword } = req.body
+} else {
+  res.status(400)
+  throw new Error('Invalid credentials')
+}
+});
 
-//   if (!userName || !userEmail || !userPassword) {
-//     res.status(400)
-//     throw new Error('Please add all fields')
-//   }
+//retrieve user
+router.get('/user', async (req, res) => {
+  try {
+      const users = await Users.find().exec();
+      return res.status(200).json({
+          success: true,
+          existingUsers: users
+      });
+  } catch (err) {
+      return res.status(400).json({
+          error: err
+      });
+  }
+});
 
-//   // Check if user exists
-//   const userExists = await User.findOne({ userEmail })
+//update user
+router.put('/user/update/:id', async (req, res) => {
+  try {
+      const user = await Users.findByIdAndUpdate(req.params.id, { $set: req.body }).exec();
 
-//   if (userExists) {
-//     res.status(400)
-//     throw new Error('User already exists')
-//   }
+      if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+      }
 
-//   // Hash password
-//   const salt = await bcrypt.genSalt(10)
-//   const hashedPassword = await bcrypt.hash(userPassword, salt)
+      return res.status(200).json({
+          success: 'Update Successfully'
+      });
+  } catch (err) {
+      return res.status(400).json({ error: err });
+  }
+});
 
-//   // Create user
-//   const user = await User.create({
-//     userName,
-//     image,
-//     userEmail,
-//     userPassword: hashedPassword,
-//   })
+//Delete user
+router.delete('/user/delete/:id', async (req, res) => {
+  try {
+      const deletedUser = await Users.findByIdAndRemove(req.params.id).exec();
 
-//   if (user) {
-//     res.status(201).json({
-//       _id: user.id,
-//       userName: user.userName,
-//       image: user.image,
-//       userEmail: user.userEmail,
-//       token: generateToken(user._id),
-//     })
-//   } else {
-//     res.status(400)
-//     throw new Error('Invalid user data')
-//   }
-// })
+      if (!deletedUser) {
+          return res.status(404).json({ message: 'User not found' });
+      }
 
-// // @desc    Authenticate a user
-// // @route   POST /api/users/login
-// // @access  Public
-// const loginUser = asyncHandler(async (req, res) => {
-//   const { userEmail, userPassword } = req.body
+      return res.json({ message: 'Delete Successful', deletedUser });
+  } catch (err) {
+      return res.status(400).json({ message: 'Delete unsuccessful', error: err });
+  }
+});
 
-//   // Check for user userEmail
-//   const user = await User.findOne({ userEmail })
+module.exports = router;
 
-//   if (user && (await bcrypt.compare(userPassword, user.userPassword))) {
-//     req.session.userId = user._id;
-
-//     res.json({
-//       _id: user.id,
-//       userName: user.userName,
-//       image: user.image,
-//       userEmail: user.userEmail,
-//       token: generateToken(user._id),
-//     })
-
-//   } else {
-//     res.status(400)
-//     throw new Error('Invalid credentials')
-//   }
-// })
-
-
-// const logoutUser = (req, res) => {
-//   // if (!req.session.userId) {
-//   //   return res.status(401).json({ success: false, message: 'already logged out' });
-//   // }
-//   req.session.destroy((err) => {
-//     if (err) {
-//       return res.status(500).json({ success: false, message: 'Logout failed' });
-//     }
-//     res.clearCookie('connect.sid');
-//     res.json({ success: true, message: 'Logout successful' });
-//   });
-// };
-
-// // @desc    Get user data
-// // @route   GET /users/
-// // @access  Private
-// const getUser = asyncHandler(async (req, res) => {
-//   res.status(200).json(req.user)
-// })
-
-// const authenticate = (req, res) => {
-//   const isAuthenticated = !!req.session.userId; // Check if a session exists
-//   res.json({ isAuthenticated });
-// }
-
-// // Generate JWT
-// const generateToken = (id) => {
-//   return jwt.sign({ id }, process.env.JWT_SECRET, {
-//     expiresIn: '30d',
-//   })
-// }
-
-// module.exports = {
-//   registerUser,
-//   loginUser,
-//   logoutUser,
-//   getUser,
-//   authenticate,
-// }

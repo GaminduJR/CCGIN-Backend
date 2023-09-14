@@ -4,7 +4,6 @@ const Books = require('../models/book');
 const router = express.Router();
 
 //Save books
-
 router.post('/book/save', async (req, res) => {
     try {
         const newBook = new Books(req.body);
