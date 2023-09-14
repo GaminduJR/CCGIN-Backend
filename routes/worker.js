@@ -3,7 +3,7 @@ const Workers = require('../models/worker');
 
 const router = express.Router();
 
-//Save books
+//Save worker
 
 router.post('/worker/save', async (req, res) => {
     try {
@@ -19,24 +19,9 @@ router.post('/worker/save', async (req, res) => {
     }
 });
 
-//get book
+//get worker
 
-// router.get('/book',(req,res)=>{
-//     Books.find().exec((err,book)=>{
-//         if(err){
-//             return res.status(400).json({
-//                 erro:err
-//             })
-//         }
-
-//         return res.status(200).json({
-//             success:true,
-//             existingBooks:book
-//         });
-//     });
-// });
-
-router.get('/worker', async (req, res) => {
+router.get('/worker/view', async (req, res) => {
     try {
         const workers = await Workers.find().exec();
         return res.status(200).json({
@@ -51,24 +36,7 @@ router.get('/worker', async (req, res) => {
 });
 
 
-//update book
-
-// router.put('/book/update/:id',(req,res)=>{
-//     Books.findByIdAndUpdate(
-//         req.params.id,
-//         {
-//             $set:req.body
-//         },
-//         (err,book)=>{
-//             if(err){
-//                 return res.status(400).json({error:err});
-//             }
-//             return res.status(200).json({
-//                 success:"Update Succesfully"
-//             })
-//         }
-//     );
-// });
+//update worker
 
 router.put('/worker/update/:id', async (req, res) => {
     try {
@@ -87,21 +55,7 @@ router.put('/worker/update/:id', async (req, res) => {
 });
 
 
-//Delete book
-
-// router.delete('/book/delete/:id',(req,res)=>{
-//     Books.findByIdAndRemove(req.params.id).exec((err,deletedBook)=>{
-
-//         if(err) return res.status(400).json({
-//             message:"Delete unsuccesful",error
-//     });
-
-//         return res.json({
-//             message:"Delete Succesful",deletedBook
-//         });
-//     });
-// });
-
+//Delete worker
 router.delete('/worker/delete/:id', async (req, res) => {
     try {
         const deletedWorker = await Workers.findByIdAndRemove(req.params.id).exec();

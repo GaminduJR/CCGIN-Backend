@@ -4,7 +4,6 @@ const Books = require('../models/book');
 const router = express.Router();
 
 //Save books
-
 router.post('/book/save', async (req, res) => {
     try {
         const newBook = new Books(req.body);
@@ -19,9 +18,9 @@ router.post('/book/save', async (req, res) => {
     }
 });
 
-//get book
 
-router.get('/book', async (req, res) => {
+//retrieve book
+router.get('/book/view', async (req, res) => {
     try {
         const books = await Books.find().exec();
         return res.status(200).json({

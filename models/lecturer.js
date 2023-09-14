@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const lecturerSchema = new mongoose.Schema({
 
-    name:{
+    Name:{
         type:String,
         required:true
     },
@@ -16,7 +16,7 @@ const lecturerSchema = new mongoose.Schema({
         unique:true,
         required:true
     },
-    contactNum:{
+    phoneNum:{
         type:String,
         required:true
     }
