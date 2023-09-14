@@ -23,7 +23,7 @@ router.post('/lecturer/save', async (req, res) => {
 
 //get post
 
-router.get('/lecturer', async (req, res) => {
+router.get('/lecturer/view', async (req, res) => {
     try {
         const lecturer = await Lecturer.find().exec();
         return res.status(200).json({

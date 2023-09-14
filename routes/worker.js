@@ -21,7 +21,7 @@ router.post('/worker/save', async (req, res) => {
 
 //get worker
 
-router.get('/worker', async (req, res) => {
+router.get('/worker/view', async (req, res) => {
     try {
         const workers = await Workers.find().exec();
         return res.status(200).json({

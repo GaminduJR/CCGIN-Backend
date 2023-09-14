@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const librarianSchema = new mongoose.Schema({
 
-    Name:{
+    name:{
         type:String,
         required:true
     },

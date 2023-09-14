@@ -19,7 +19,7 @@ router.post('/book/save', async (req, res) => {
 });
 
 //retrieve book
-router.get('/book', async (req, res) => {
+router.get('/book/view', async (req, res) => {
     try {
         const books = await Books.find().exec();
         return res.status(200).json({
