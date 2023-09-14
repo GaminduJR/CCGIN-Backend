@@ -1,3 +1,27 @@
+//login user
+router.post(
+  "/user/login",
+  userController.loginUser
+);
+
+//register user
+router.post(
+  "/user/register",
+  upload.single("file"),
+  userController.registerUser
+);
+
+router.post(
+  "/user/logout",
+  userController.logoutUser
+);
+
+//get users
+router.get("/user", userController.getUser);
+
+
+router.get('/user/check-session', userController.authenticate);
+
 const express = require('express');
 const Users = require('../models/user');
 
@@ -115,4 +139,3 @@ router.delete('/user/delete/:id', async (req, res) => {
 });
 
 module.exports = router;
-
