@@ -19,135 +19,123 @@ router.post(
 //get users
 router.get("/user", userController.getUser);
 
-// //update user
-// router.put(
-//   "/user/update/:id",
-//   upload.single("file"),
-//   userController.editUser
-// );
-
-// //delete user
-// router.delete("/user/delete/:id", userController.deleteUser);
-
-// //get a specific user
-// router.get("/user/:id", userController.getSpecificUser);
 
 router.get('/user/check-session', userController.authenticate);
 
+const express = require('express');
+const Users = require('../models/user');
 
-// const jwt = require('jsonwebtoken')
-// const bcrypt = require('bcryptjs')
-// const asyncHandler = require('express-async-handler')
-// const User = require('../models/userModel')
+const router = express.Router();
+const bcrypt = require('bcryptjs')
 
-// // @desc    Register new user
-// // @route   POST /api/users
-// // @access  Public
-// const registerUser = asyncHandler(async (req, res) => {
-//   const { userName, image, userEmail, userPassword } = req.body
+// register user
+router.post('/user/register', async (req, res) => {
+  const { userName, userEmail, userPassword } = req.body
 
-//   if (!userName || !userEmail || !userPassword) {
-//     res.status(400)
-//     throw new Error('Please add all fields')
-//   }
+  if (!userName || !userEmail || !userPassword) {
+    res.status(400)
+    throw new Error('Please add all fields')
+  }
 
-//   // Check if user exists
-//   const userExists = await User.findOne({ userEmail })
+  // Check if user exists
+  const userExists = await Users.findOne({ userEmail })
 
-//   if (userExists) {
-//     res.status(400)
-//     throw new Error('User already exists')
-//   }
+  if (userExists) {
+    res.status(400)
+    throw new Error('User already exists')
+  }
 
-//   // Hash password
-//   const salt = await bcrypt.genSalt(10)
-//   const hashedPassword = await bcrypt.hash(userPassword, salt)
+  // Hash password
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(userPassword, salt)
 
-//   // Create user
-//   const user = await User.create({
-//     userName,
-//     image,
-//     userEmail,
-//     userPassword: hashedPassword,
-//   })
+  // Create user
+  const user = await Users.create({
+    userName,
+    userEmail,
+    userPassword: hashedPassword,
+  })
 
-//   if (user) {
-//     res.status(201).json({
-//       _id: user.id,
-//       userName: user.userName,
-//       image: user.image,
-//       userEmail: user.userEmail,
-//       token: generateToken(user._id),
-//     })
-//   } else {
-//     res.status(400)
-//     throw new Error('Invalid user data')
-//   }
-// })
+  if (user) {
+    res.status(201).json({
+      _id: user.id,
+      userName: user.userName,
+      userEmail: user.userEmail,
+      // token: generateToken(user._id),
+    })
+  } else {
+    res.status(400)
+    throw new Error('Invalid user data')
+  }
+});
 
-// // @desc    Authenticate a user
-// // @route   POST /api/users/login
-// // @access  Public
-// const loginUser = asyncHandler(async (req, res) => {
-//   const { userEmail, userPassword } = req.body
+// login user
+router.post('/user/login', async (req, res) => {
+const { userEmail, userPassword } = req.body
 
-//   // Check for user userEmail
-//   const user = await User.findOne({ userEmail })
+// Check for user userEmail
+const user = await Users.findOne({ userEmail })
 
-//   if (user && (await bcrypt.compare(userPassword, user.userPassword))) {
-//     req.session.userId = user._id;
+if (user && (await bcrypt.compare(userPassword, user.userPassword))) {
+  req.session.userId = user._id;
 
-//     res.json({
-//       _id: user.id,
-//       userName: user.userName,
-//       image: user.image,
-//       userEmail: user.userEmail,
-//       token: generateToken(user._id),
-//     })
+  res.json({
+    _id: user.id,
+    userName: user.userName,
+    userEmail: user.userEmail,
+  })
 
-//   } else {
-//     res.status(400)
-//     throw new Error('Invalid credentials')
-//   }
-// })
+} else {
+  res.status(400)
+  throw new Error('Invalid credentials')
+}
+});
 
+//retrieve user
+router.get('/user', async (req, res) => {
+  try {
+      const users = await Users.find().exec();
+      return res.status(200).json({
+          success: true,
+          existingUsers: users
+      });
+  } catch (err) {
+      return res.status(400).json({
+          error: err
+      });
+  }
+});
 
-// const logoutUser = (req, res) => {
-//   // if (!req.session.userId) {
-//   //   return res.status(401).json({ success: false, message: 'already logged out' });
-//   // }
-//   req.session.destroy((err) => {
-//     if (err) {
-//       return res.status(500).json({ success: false, message: 'Logout failed' });
-//     }
-//     res.clearCookie('connect.sid');
-//     res.json({ success: true, message: 'Logout successful' });
-//   });
-// };
+//update user
+router.put('/user/update/:id', async (req, res) => {
+  try {
+      const user = await Users.findByIdAndUpdate(req.params.id, { $set: req.body }).exec();
 
-// // @desc    Get user data
-// // @route   GET /users/
-// // @access  Private
-// const getUser = asyncHandler(async (req, res) => {
-//   res.status(200).json(req.user)
-// })
+      if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+      }
 
-// const authenticate = (req, res) => {
-//   const isAuthenticated = !!req.session.userId; // Check if a session exists
-//   res.json({ isAuthenticated });
-// }
+      return res.status(200).json({
+          success: 'Update Successfully'
+      });
+  } catch (err) {
+      return res.status(400).json({ error: err });
+  }
+});
 
-// // Generate JWT
-// const generateToken = (id) => {
-//   return jwt.sign({ id }, process.env.JWT_SECRET, {
-//     expiresIn: '30d',
-//   })
-// }
+//Delete user
+router.delete('/user/delete/:id', async (req, res) => {
+  try {
+      const deletedUser = await Users.findByIdAndRemove(req.params.id).exec();
 
-// module.exports = {
-//   registerUser,
-//   loginUser,
-//   logoutUser,
-//   getUser,
-//   authenticate,
-// }
+      if (!deletedUser) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      return res.json({ message: 'Delete Successful', deletedUser });
+  } catch (err) {
+      return res.status(400).json({ message: 'Delete unsuccessful', error: err });
+  }
+});
+
+module.exports = router;
