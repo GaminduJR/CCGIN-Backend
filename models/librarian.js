@@ -14,7 +14,7 @@ const librarianSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    phoneNum:{
+    contactNum:{
         type:String,
         required:true
     }
