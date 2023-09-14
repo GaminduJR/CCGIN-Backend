@@ -20,7 +20,7 @@ router.post('/librarian/save', async (req, res) => {
 });
 
 //retrieve librarian
-router.get('/librarian', async (req, res) => {
+router.get('/librarian/view', async (req, res) => {
     try {
         const librarian = await Librarian.find().exec();
         return res.status(200).json({
