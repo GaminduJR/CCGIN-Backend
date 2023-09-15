@@ -7,8 +7,9 @@ const router = express.Router();
 //Save posts
 
 router.post('/lecturer/save', async (req, res) => {
+
     try {
-        const newLecturer = new Lecturers(req.body);
+        const newLecturer = new Lecturer(req.body);
         await newLecturer.save();
         return res.status(200).json({
             success: "Lecturer saved successfully"
@@ -38,6 +39,24 @@ router.get('/lecturer/view', async (req, res) => {
 });
 
 
+//get a specific Plan
+router.get("/lecturer/:id", async (req, res) => {
+    let lecturerID = req.params.id;
+    try {
+      const lecturer = await Lecturer.findById(lecturerID).exec();
+      return res.status(200).json({
+        success: true,
+        lecturer,
+      });
+      console.log(lecturer);
+    } catch (err) {
+      return res.status(400).json({
+        error: err,
+      });
+    }
+  });
+
+  
 //update post
 
 router.put('/lecturer/update/:id', async (req, res) => {

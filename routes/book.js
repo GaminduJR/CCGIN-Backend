@@ -35,6 +35,24 @@ router.get('/book/view', async (req, res) => {
 });
 
 
+//get a specific Plan
+router.get("/book/:id", async (req, res) => {
+    let bookID = req.params.id;
+    try {
+      const book = await Books.findById(bookID).exec();
+      return res.status(200).json({
+        success: true,
+        book,
+      });
+      console.log(book);
+    } catch (err) {
+      return res.status(400).json({
+        error: err,
+      });
+    }
+  });
+  
+
 //update book
 
 router.put('/book/update/:id', async (req, res) => {

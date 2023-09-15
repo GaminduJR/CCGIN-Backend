@@ -35,6 +35,25 @@ router.get('/librarian/view', async (req, res) => {
 });
 
 
+//get a specific Plan
+
+router.get("/librarian/:id", async (req, res) => {
+    let librarianID = req.params.id;
+    try {
+      const librarian = await Librarian.findById(librarianID).exec();
+      return res.status(200).json({
+        success: true,
+        librarian,
+      });
+      console.log(librarian);
+    } catch (err) {
+      return res.status(400).json({
+        error: err,
+      });
+    }
+  });
+  
+
 //update librarian
 
 router.put('/librarian/update/:id', async (req, res) => {

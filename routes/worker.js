@@ -36,6 +36,24 @@ router.get('/worker/view', async (req, res) => {
 });
 
 
+//get a specific Plan
+router.get("/worker/:id", async (req, res) => {
+    let workerID = req.params.id;
+    try {
+      const worker = await Workers.findById(workerID).exec();
+      return res.status(200).json({
+        success: true,
+        worker,
+      });
+      console.log(worker);
+    } catch (err) {
+      return res.status(400).json({
+        error: err,
+      });
+    }
+  });
+  
+
 //update worker
 
 router.put('/worker/update/:id', async (req, res) => {

@@ -23,7 +23,7 @@ app.use(lecturerRoutes);
 app.use(bookRoutes);
 app.use(workerRoutes);
 app.use(librarianRoutes);
-app.use(userRoutes);
+// app.use(userRoutes);
 
 
 const PORT = 8000;
